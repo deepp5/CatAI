@@ -638,32 +638,36 @@ def sync_checklist(req: SyncChecklistRequest):
 
 @app.get("/debug/download/{media_id}")
 def debug_download(media_id: str):
-    row_resp = (
+    # Fetch media record
+    media_result = (
         supabase.table("media")
         .select("id,bucket,path,type,status")
         .eq("id", media_id)
         .limit(1)
         .execute()
     )
-    rows = row_resp.data or []
-    if not rows:
+
+    media_rows = media_result.data or []
+    if not media_rows:
         raise HTTPException(status_code=404, detail="media_id not found")
 
-    row = rows[0]
-    url = public_storage_url(row["bucket"], row["path"])
-    r = requests.get(url, timeout=30)
-    if r.status_code != 200:
+    media = media_rows[0]
+    file_url = public_storage_url(media["bucket"], media["path"])
+
+    response = requests.get(file_url, timeout=30)
+
+    if response.status_code != 200:
         raise HTTPException(
             status_code=500,
-            detail=f"download failed: {r.status_code} {r.text[:200]}",
+            detail=f"download failed: {response.status_code} {response.text[:200]}",
         )
 
     return {
         "media_id": media_id,
-        "type": row.get("type"),
-        "status": row.get("status"),
-        "url_used": url,
-        "bytes_downloaded": len(r.content),
+        "type": media.get("type"),
+        "status": media.get("status"),
+        "url_used": file_url,
+        "bytes_downloaded": len(response.content),
     }
 
 
