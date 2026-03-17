@@ -1026,27 +1026,32 @@ def generate_report(req: GenerateReportRequest):
 # -----------------------------
 
 def _download_media_bytes(media_id: str) -> tuple[dict, bytes]:
-    """Load a media row and download its bytes from Supabase public storage."""
-    row_resp = (
+    """Retrieve a media record and download its content from Supabase public storage."""
+
+    media_result = (
         supabase.table("media")
         .select("id,bucket,path,category,type,status,machine_id,session_id")
         .eq("id", media_id)
         .limit(1)
         .execute()
     )
-    rows = row_resp.data or []
-    if not rows:
+
+    media_rows = media_result.data or []
+    if not media_rows:
         raise HTTPException(status_code=404, detail="media_id not found")
 
-    row = rows[0]
-    url = public_storage_url(row["bucket"], row["path"])
-    r = requests.get(url, timeout=60)
-    if r.status_code != 200 or not r.content:
+    media_record = media_rows[0]
+    file_url = public_storage_url(media_record["bucket"], media_record["path"])
+
+    response = requests.get(file_url, timeout=60)
+
+    if response.status_code != 200 or not response.content:
         raise HTTPException(
             status_code=500,
-            detail=f"download failed: {r.status_code} {r.text[:200]}",
+            detail=f"download failed: {response.status_code} {response.text[:200]}",
         )
-    return row, r.content
+
+    return media_record, response.content
 
 
 def extract_mfcc_features(audio_bytes: bytes, ext: str = ".mp3", sr: int = 16000) -> np.ndarray:
