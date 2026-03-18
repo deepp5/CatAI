@@ -135,7 +135,10 @@ def sm_add_memory(content: str, tags: list[str]):
         return None
 
     try:
-        result = sm_client.add(content=content, container_tags=tags)
+        result = sm_client.add(
+            content=content,
+            container_tags=tags
+        )
 
         # Useful for debugging during development / hackathons
         print("Supermemory add success:", type(result), result)
