@@ -103,10 +103,9 @@ FULL_CHECKLIST = {
 # Helper to flatten keys
 def get_flat_checklist_keys():
     keys = []
-    for section in FULL_CHECKLIST.values():
-        keys.extend(section.keys())
+    for checklist_section in FULL_CHECKLIST.values():
+        keys.extend(checklist_section.keys())
     return keys
-
 app = FastAPI()
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
