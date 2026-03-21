@@ -21,11 +21,14 @@ except Exception:
 
 Status = Literal["PASS", "MONITOR", "FAIL", "none"]
 
+from typing import Optional
+from pydantic import BaseModel
+
 class AnalyzeRequest(BaseModel):
     inspection_id: str
     user_text: str
-    images: Optional[List[str]] = None
-    chat_history: Optional[List[Dict[str, str]]] = None  # [{"role": "user|assistant", "content": "..."}]
+    images: Optional[list[str]] = None
+    chat_history: Optional[list[dict[str, str]]] = None
 
 class ChecklistUpdate(BaseModel):
     status: Literal["PASS", "MONITOR", "FAIL"]
