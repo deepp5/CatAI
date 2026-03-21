@@ -41,11 +41,11 @@ class SyncChecklistRequest(BaseModel):
 
 class AnalyzeResponse(BaseModel):
     intent: Literal["inspection_update", "knowledge_question", "unclear_input"]
-    checklist_updates: Dict[str, ChecklistUpdate]
-    update_reasoning: Dict[str, str] = {}
+    checklist_updates: dict[str, ChecklistUpdate]
+    update_reasoning: dict[str, str] = {}
     risk_score: Optional[Literal["Low", "Moderate", "High"]] = None
     answer: Optional[str] = None
-    follow_up_questions: List[str]
+    follow_up_questions: list[str]
 
 class GenerateReportRequest(BaseModel):
     inspection_id: str
