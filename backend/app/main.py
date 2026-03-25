@@ -50,8 +50,8 @@ class AnalyzeResponse(BaseModel):
 class GenerateReportRequest(BaseModel):
     inspection_id: str
 
-# FULL_CHECKLIST constant
-FULL_CHECKLIST = {
+# COMPLETE_INSPECTION_CHECKLIST constant
+COMPLETE_INSPECTION_CHECKLIST = {
     "FROM_THE_GROUND": {
         "Tires, wheels, stem caps, lug nuts": "none",
         "Bucket cutting edge, moldboard": "none",
@@ -69,7 +69,7 @@ FULL_CHECKLIST = {
         "Lights, front and rear": "none",
         "Battery compartment": "none",
         "Diesel exhaust fluid tank": "none",
-        "Overall machine": "none"
+        "Overall machine": "none",
     },
     "ENGINE_COMPARTMENT": {
         "Engine oil": "none",
@@ -79,7 +79,7 @@ FULL_CHECKLIST = {
         "Fuel filters / water separator": "none",
         "All belts": "none",
         "Air filter": "none",
-        "Overall engine compartment": "none"
+        "Overall engine compartment": "none",
     },
     "OUTSIDE_CAB": {
         "Handholds": "none",
@@ -87,7 +87,7 @@ FULL_CHECKLIST = {
         "Fire extinguisher": "none",
         "Windshield and windows": "none",
         "Windshield wipers / washers": "none",
-        "Doors": "none"
+        "Doors": "none",
     },
     "INSIDE_CAB": {
         "Seat": "none",
@@ -96,8 +96,8 @@ FULL_CHECKLIST = {
         "Mirrors": "none",
         "Cab air filter": "none",
         "Gauges, indicators, switches, controls": "none",
-        "Overall cab interior": "none"
-    }
+        "Overall cab interior": "none",
+    },
 }
 
 # Helper to flatten keys
