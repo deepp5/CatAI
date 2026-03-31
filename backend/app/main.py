@@ -130,10 +130,24 @@ if Supermemory and SUPERMEMORY_API_KEY:
         sm_client = None
 
 
-def sm_add_memory(content: str, tags: list[str]):
-    """Save a memory snippet. If Supermemory is not configured, safely return."""
+from typing import Optional, List, Any
+
+def sm_add_memory(content: str, tags: List[str], debug: bool = True) -> Optional[Any]:
+    """
+    Save a memory snippet to Supermemory.
+
+    Args:
+        content (str): The memory content to store
+        tags (List[str]): Tags for organizing memory
+        debug (bool): Enable debug logging
+
+    Returns:
+        Optional[Any]: Result from Supermemory or None if failed
+    """
 
     if not sm_client:
+        if debug:
+            print("Supermemory client not initialized.")
         return None
 
     try:
@@ -142,13 +156,14 @@ def sm_add_memory(content: str, tags: list[str]):
             container_tags=tags
         )
 
-        # Useful for debugging during development / hackathons
-        print("Supermemory add success:", type(result), result)
+        if debug:
+            print("✅ Supermemory add success:", result)
 
         return result
 
     except Exception as error:
-        print("Supermemory add failed:", error)
+        if debug:
+            print("❌ Supermemory add failed:", str(error))
         return None
 
 def sm_search_memory(query: str, tags: list[str], k: int = 5) -> list[str]:
