@@ -270,16 +270,34 @@ app.add_middleware(
 
 @app.post("/start-inspection")
 def start_inspection(machine_model: str):
-    initial_state = {}
-    for section in FULL_CHECKLIST.values():
-        initial_state.update(section)
+    """
+    Initialize a new inspection with a flattened checklist.
+    """
 
-    resp = supabase.table("inspections").insert({
-        "machine_model": machine_model,
-        "checklist_json": initial_state
-    }).execute()
+    try:
+        # 1. Build initial checklist state
+        initial_state = {}
+        for section in FULL_CHECKLIST.values():
+            initial_state.update(section)
 
-    return resp.data[0]
+        # 2. Insert into Supabase
+        resp = supabase.table("inspections").insert({
+            "machine_model": machine_model,
+            "checklist_json": initial_state,
+            "created_at": datetime.utcnow().isoformat()
+        }).execute()
+
+        # 3. Validate response
+        if not resp.data:
+            raise HTTPException(status_code=500, detail="Failed to create inspection")
+
+        return {
+            "status": "success",
+            "inspection": resp.data[0]
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 class AnalyzeVideoCommandRequest(BaseModel):
     user_text: str
     current_checklist_state: Dict[str, Status]
